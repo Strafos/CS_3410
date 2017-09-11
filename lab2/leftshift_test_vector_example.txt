@@ -1,0 +1,12 @@
+#First line labels input and output pins, labeled with [bit width] if >1
+#Each line after is an individual test with each column representing a pin
+#Numbers can be in decimal, binary, hexadecimal, or even octal if you want
+
+B[32]                              Sa[5]   Cin   C[32]
+34                                 2       0     136                                 #Decimal
+325948595                          15      0     -900104192                          #Negative Decimal
+00000000000000000000000000000001   00100   1     00000000000000000000000000011111    #Binary
+0x00000005                         0x01    0x0   0x0000000A                          #Hexadecimal
+0o17777777777                      0o1     0o0   0o37777777776                       #Octal
+00011111001010100010110111110001   0o10    0x0   707653888                           #Everything together!
+

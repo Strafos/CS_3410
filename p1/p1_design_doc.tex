@@ -1,0 +1,79 @@
+
+\documentclass[11pt]{article}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\begin{document}
+
+\title{CS 3410 Design Document}
+\author{CS 3410 Course Staff}
+\maketitle
+
+\section{Overview}
+This document serves as an example of what a design document should contain. Of course, you are not required to strictly adhere to the outline of this particular example, nor does every project fit this template perfectly. However, this document outlines most of the important elements that we look for in design documentations.
+
+In the overview section of your design documentation, briefly describe the project to your readers in terms of the intended purpose of the project, as well as any principles that apply to your design.
+
+\section{Component Design Documentation}
+	For each major section of your project, briefly describe the purpose of the described component and how it contributes toward the overall goal of the project.
+
+	\subsection{Diagrams and description}
+	If applicable (generally true for circuits), be sure to include a diagram with proper labels, truth tables with values that you used to generate circuits, or any other visual or data that you may find useful in explaining what you are doing and what you are designing.
+
+	Describe what exactly you are showing in your diagram (if any), and what your design looks like overall. How does it accomplish what you are trying to do?
+
+	\subsection{Design justification}
+	What design decisions did you make? Did it involve some tradeoffs in one area for another? How do you justify these tradeoffs? Describe in reasonable detail about how you resolved the issue to convince your readers (and yourself) that your design is indeed sound, and how you expect your project will turn out as a result of your design.
+
+
+\section{Example: 1-bit full adder}
+	A one-bit full adder was designed to support the addition of two 1-bit inputs with a carry bit. This circuit is necessary for the construction of more advanced full adders.
+
+	\subsection{Implementation Details}
+
+	\begin{figure}[htp]
+		\centering
+		\includegraphics[scale=.70]{Full_Adder.png}
+	\end{figure}
+
+	In the above diagram, $A$ and $B$ are the 1-bit inputs, while
+        $C_{in}$ is the carry-in bit. $S$ is the output bit, while
+        $C_{out}$ is the carry-out bit. This is the optimal
+        circuit for the following truth table: \\
+
+	
+	\begin{tabular}{|l|l|l|l|l|}
+	\hline
+		$A$ & $B$ & $C_{in}$ & $S$ & $C_{out}$ \\
+			\hline
+		0 & 0 & 0 & 0 & 0 \\
+			\hline
+		0 & 0 & 1 & 1 & 0 \\
+			\hline
+		0 & 1 & 0 & 1 & 0 \\
+			\hline
+		0 & 1 & 1 & 0 & 1 \\
+			\hline
+		1 & 0 & 0 & 1 & 0 \\
+			\hline
+		1 & 0 & 1 & 0 & 1 \\
+			\hline
+		1 & 1 & 0 & 0 & 1 \\
+			\hline
+		1 & 1 & 1 & 1 & 1 \\
+	\hline
+	\end{tabular}
+	
+	\subsection{Evaluation}
+	Our circuit implements the optimal logical expression for both
+        the resulting bit and the carry-out bit. As a result, our
+        solution did not have any tradeoffs and is the optimal circuit
+        for this purpose.
+
+
+\section{References (if any)}
+If you use any ideas, code, or images that are not your original work,
+please verify that it is within the acceptable bounds of this course
+and that you cite it properly in order to avoid academic integrity
+issues.
+
+\end{document}
