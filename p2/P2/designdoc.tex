@@ -1,0 +1,129 @@
+\documentclass[10pt]{article}
+
+\usepackage{fullpage}
+\usepackage[normalem]{ulem} % For strikethrough font
+\title{Example Design Documentation}
+% Name, netid
+\author{first\_name last\_name (netid) \and first\_name last\_name (netid)}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+In this course, you'll be required to write design documents for several of your projects.
+It's very important that you put time and effort into this!
+The students who put time and effort into their design documents almost always end up getting better grades and having an easier time with their projects in this course.
+At this point, you've probably had to do some medium-sized coding projects for your coursework;
+so you should realize that it is often difficult to go back and redisign when you run into a problem in the middle of your project.
+The design document provides you with a way to think about the problems you'll be coming up against while doing your initial design.
+
+While the structure of a design document may seem constraining in its structure, it is designed to do two things:
+first, it requires you to use an organized thought process while designing your project; 
+second, it requires you to write out the results of this thought process in a way that is communicable, in this case, with us, the TAs, but also with your teammates.
+
+Provide an overview of the entire document:
+\begin{itemize}
+\item Describe the purpose of the document
+\item Describe the scope of the document
+\item Describe this document's intended audience
+\item Provide references for any other documents, such as textbook, reference manual, etc.
+\item Define any important terms, acronyms, or abbreviations.
+\item Summarize the content of the document
+\end{itemize}
+
+\section{Overview}
+Provides an general overview of the functionality of the system and matters related to its design (including
+a discussion of the basic design approach and organization). You could split this up to multiple subsections.
+
+\section{The Fetch Stage}
+
+\subsection{Circuit Diagram}
+Top level schematic and description
+\subsubsection{Submodule A}
+Submodule A schematic and description
+\subsubsection{Submodule B}
+Submodule B schematic and description
+
+\subsection{Correctness Constraints}
+State the functional requirement of this module.
+\begin{itemize}
+\item item 1
+\item item 2
+\item item 3
+\end{itemize}
+
+\subsection{Testing}
+State the approach to verify the functional correctness of this module.
+
+\section{...}
+
+\section{Summary}
+...
+
+\section{Guidelines}
+The purpose of this document is for you to outline the design of your MIPS processor and provide an overview of your proposed implementation. 
+
+It serves to:
+\begin{itemize}
+\item Help you to start early and understand the requirements.
+\item Facilitate communication between you and your TA to get feedback on your design.
+\item Clarify any part of your circuit that we may find confusing.
+\end{itemize}
+
+As with any high level design, you should update and refine this document
+as you work on the implementation.  You will need to turn an initial design document a week after the project is released and turn in a final design document when you are done with the project. 
+
+\subsection{Modularity}
+Modularity is the single most important concept to understand when writing a design document
+(and possibly in digital design in general). Section 1.2 in this book\footnote[1]{Digital design 
+and computer architecture by David Money Harris and Sarah L. Harris. A free ebook version is available from 
+Cornell library at cornell.worldcat.org} gives a good overview of what
+exactly modularity means in this context, and it is highly suggested that you read it. Make sure
+when you are designing your system that you are primarily thinking in terms of the modules you
+need and the interfaces between them. If any single module in your system is so complex
+that you cannot easily reason about its behavior, then it should be split up into multiple modules.
+
+\subsection{A picture is worth a \sout{1,000} million words}
+Trying to write an entirely textual description of a circuit quickly becomes unmanageable for a
+design of any significant size. Well organized diagrams should always come first, and then small
+textual blurbs should be added for any piece of the diagram which may not be immediately
+clear to the viewer. When creating diagrams, it is important to organize blocks in some logical
+fashion. A typical strategy is to have inputs on the left and outputs on the right, and then to have
+data ``flow" through your module from left to right.
+
+\subsection{Know Your Audience}
+You can assume that anybody looking at your design will know everything from lecture, but
+not that they have any prior knowledge about how your design is organized. Therefore it
+is perfectly acceptable to use primitive blocks such as the various boolean gates and flipflops
+without showing their transistor level implementation. In fact, it will actively hurt the
+clarity of your document if you decide to show implementation at such a low level. It is even
+fine to use high level blocks such as adders that we have covered in class without further
+elaboration. If you have a block that is a combinational function, it is best to give a truth table
+or boolean expression for the function rather than showing a harder to understand gate-level
+implementation of the function.
+It is not, however, okay to give a high level description of a block such as ``Control Logic" and
+never give any further elaboration.
+
+\subsection{Approach}
+We recommend the following process for making your document:
+\begin{itemize}
+\item Draw a top level schematic for your circuit, using the coarsest blocks you can think of as your
+building blocks.
+\item For each block on the top level, draw a new diagram showing the implementation of that
+block. Again, use modules to implement any non-trivial functionality in this model.
+\item Recursively apply this process everywhere until you only have primitive blocks (see Know
+Your Audience).
+\item If there are any places where your solution is not made immediately obvious by the diagram,
+add text annotations to explain what is happening.
+\end{itemize}
+
+\subsection{Miscellaneous}
+The required submission file format for the design document is PDF.
+You can, for example, create a PDF file using Microsoft Word or Google Docs. However,
+we recommend you to generate your PDF version of the design document using \LaTeX. You could
+take this tex file and the associated Makefile as a starting point for your
+design document. For a quick reference on \LaTeX, please refer to the wikibook at
+http://en.wikibooks.org/wiki/LaTeX
+
+
+\end{document}
