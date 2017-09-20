@@ -1,5 +1,0 @@
-Compared values from http://dannyqiu.me/mips-interpreter/ to values from register
-ADDIU $t1, $zero, 1233 
-ADDIU $t2, $zero, 1322
-ADDIU $t3, $zero, 5555
-SUBU $t4, $zero

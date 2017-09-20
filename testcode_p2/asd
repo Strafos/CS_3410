@@ -1,7 +1,0 @@
-ADDIU $1, $zero, -24308
-ADDIU $3, $zero, 0
-ADDIU $3, $zero, 0
-ADDIU $3, $zero, 0
-ADDIU $3, $zero, 0
-ADDIU $3, $zero, 1023
-SLTI $18, $1, 20619
