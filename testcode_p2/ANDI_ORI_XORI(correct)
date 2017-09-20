@@ -1,0 +1,7 @@
+# Compared values from http://dannyqiu.me/mips-interpreter/ to values from register
+ADDIU $t1, $zero, 1233 
+ADDIU $t2, $zero, 1322
+ADDU $t3, $t1, $t2
+ANDI $t5, $t3, 12619
+ORI $t6, $t1, 1000
+XORI $t7, $t3, 12461
