@@ -1,0 +1,231 @@
+ADDIU $1, $zero, -29393
+ADDIU $2, $zero, 634
+ADDIU $3, $zero, 727
+ADDIU $4, $zero, 3803
+ADDIU $5, $zero, -14744
+ADDIU $6, $zero, -13627
+ADDIU $7, $zero, -14593
+ADDIU $8, $zero, -16701
+ADDIU $9, $zero, 29454
+ADDIU $10, $zero, -25527
+ADDIU $11, $zero, -674
+ADDIU $12, $zero, -17740
+ADDIU $13, $zero, -24483
+ADDIU $14, $zero, 4272
+ADDIU $15, $zero, -30978
+ADDIU $16, $zero, -15569
+ADDIU $17, $zero, -22567
+ADDIU $18, $zero, 8306
+ADDIU $19, $zero, 28221
+ADDIU $20, $zero, 10147
+ADDIU $21, $zero, -17160
+ADDIU $22, $zero, -25401
+ADDIU $23, $zero, 16414
+ADDIU $24, $zero, -20219
+ADDIU $25, $zero, 14749
+ADDIU $26, $zero, 28126
+ADDIU $27, $zero, -18223
+ADDIU $28, $zero, 12532
+ADDIU $29, $zero, 24336
+ADDIU $30, $zero, -30527
+ADDIU $31, $zero, 1515
+JR $6
+JALR $19, $3
+JR $26
+JALR $28, $17
+JR $25
+JALR $28, $16
+JR $29
+JALR $11, $30
+JR $18
+JALR $23, $28
+JR $12
+JALR $14, $14
+JR $23
+JALR $24, $7
+JR $11
+JALR $10, $21
+JR $19
+JALR $14, $12
+JR $3
+JALR $26, $29
+JR $22
+JALR $17, $27
+JR $29
+JALR $6, $21
+JR $30
+JALR $29, $14
+JR $6
+JALR $1, $8
+JR $20
+JALR $23, $8
+JR $21
+JALR $13, $5
+JR $22
+JALR $27, $11
+JR $10
+JALR $4, $22
+JR $2
+JALR $14, $1
+JR $14
+JALR $18, $26
+JR $23
+JALR $8, $31
+JR $18
+JALR $13, $15
+JR $5
+JALR $8, $10
+JR $11
+JALR $15, $27
+JR $8
+JALR $22, $13
+JR $26
+JALR $15, $25
+JR $28
+JALR $3, $10
+JR $19
+JALR $30, $15
+JR $14
+JALR $7, $15
+JR $18
+JALR $29, $2
+JR $5
+JALR $7, $31
+JR $13
+JALR $27, $26
+JR $24
+JALR $14, $6
+JR $31
+JALR $13, $16
+JR $13
+JALR $25, $6
+JR $7
+JALR $2, $19
+JR $19
+JALR $3, $1
+JR $18
+JALR $15, $4
+JR $29
+JALR $22, $6
+JR $29
+JALR $15, $18
+JR $27
+JALR $21, $26
+JR $30
+JALR $25, $15
+JR $14
+JALR $19, $21
+JR $2
+JALR $17, $16
+JR $18
+JALR $22, $14
+JR $6
+JALR $13, $31
+JR $12
+JALR $15, $25
+JR $20
+JALR $31, $22
+JR $29
+JALR $19, $4
+JR $12
+JALR $2, $14
+JR $23
+JALR $23, $13
+JR $13
+JALR $13, $5
+JR $5
+JALR $9, $2
+JR $25
+JALR $5, $6
+JR $12
+JALR $5, $11
+JR $17
+JALR $23, $10
+JR $3
+JALR $15, $12
+JR $29
+JALR $11, $19
+JR $23
+JALR $23, $25
+JR $3
+JALR $14, $23
+JR $7
+JALR $1, $7
+JR $22
+JALR $16, $15
+JR $10
+JALR $13, $30
+JR $7
+JALR $31, $12
+JR $2
+JALR $27, $27
+JR $21
+JALR $5, $24
+JR $19
+JALR $6, $6
+JR $7
+JALR $16, $18
+JR $21
+JALR $18, $19
+JR $11
+JALR $11, $9
+JR $30
+JALR $31, $1
+JR $4
+JALR $22, $31
+JR $23
+JALR $19, $1
+JR $18
+JALR $26, $12
+JR $29
+JALR $31, $29
+JR $12
+JALR $4, $17
+JR $16
+JALR $11, $26
+JR $21
+JALR $16, $15
+JR $4
+JALR $29, $20
+JR $21
+JALR $15, $1
+JR $3
+JALR $25, $12
+JR $17
+JALR $26, $28
+JR $11
+JALR $2, $25
+JR $26
+JALR $12, $5
+JR $1
+JALR $16, $23
+JR $3
+JALR $28, $30
+JR $9
+JALR $16, $7
+JR $31
+JALR $30, $10
+JR $12
+JALR $31, $9
+JR $18
+JALR $25, $21
+JR $6
+JALR $3, $22
+JR $6
+JALR $14, $31
+JR $5
+JALR $18, $25
+JR $30
+JALR $5, $28
+JR $29
+JALR $12, $18
+JR $19
+JALR $9, $11
+JR $2
+JALR $26, $9
+JR $7
+JALR $30, $24
+JR $1
+JALR $6, $30
+JR $9
+JALR $22, $17

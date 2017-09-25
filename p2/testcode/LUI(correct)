@@ -1,5 +1,4 @@
 # 31 Lines generate a random 16-bit uint. Saves LUI operated number in new register each time to be checked with MIPS interpreter
-LUI $0, 37706
 LUI $1, 33848
 LUI $2, 724
 LUI $3, 56045

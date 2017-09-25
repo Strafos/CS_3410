@@ -1,6 +1,10 @@
 # 6 Lines generate random unsigned numbers
 # 26 Lines randomly generate pairs of first six registers and applies SRLV/SRAV/SLLV
 # Register values are compared to those from MIPS interpreter
+# Next 26 lines are in the form SHIFT $n, $(n-1), $(n-2). This will test for MEM/WB and EX/MEM data hazards INDEPENDENTLY
+# Register outputs are checked with MIPS interpreter
+# Next 26 lines are in the form SHIFT $n, $n, $register(1-6). This will test for when MEM/WB and EX/MEM data hazards both occur, in which case the value from EX/MEM should be taken
+# Register n is checked after all instructions are run
 ADDIU $1, $zero, 30251
 ADDIU $2, $zero, 7411
 ADDIU $3, $zero, 22529
@@ -32,3 +36,55 @@ SLLV $28, $1, $2
 SRAV $29, $4, $1
 SRLV $30, $4, $2
 SLLV $31, $2, $4
+
+SLLV $7, $6, $5
+SRAV $8, $7, $6
+SRLV $9, $8, $7
+SLLV $10, $9, $8
+SRAV $11, $10, $9
+SLLV $12, $11, $10
+SLLV $13, $12, $11
+SRAV $14, $13, $12
+SRAV $15, $14, $13
+SLLV $16, $15, $14
+SLLV $17, $16, $15
+SRLV $18, $17, $16
+SLLV $19, $18, $17
+SRLV $20, $19, $18
+SRAV $21, $20, $19
+SLLV $22, $21, $20
+SRLV $23, $22, $21
+SLLV $24, $23, $22
+SLLV $25, $24, $23
+SLLV $26, $25, $24
+SRAV $27, $26, $25
+SLLV $28, $27, $26
+SLLV $29, $28, $27
+SRLV $30, $29, $28
+SRAV $31, $30, $29
+
+SRAV $5, $5, $3
+SRAV $5, $5, $4
+SLLV $5, $5, $6
+SRLV $5, $5, $2
+SLLV $5, $5, $1
+SLLV $5, $5, $6
+SRAV $5, $5, $4
+SRAV $5, $5, $3
+SLLV $5, $5, $3
+SRAV $5, $5, $4
+SRLV $5, $5, $3
+SLLV $5, $5, $5
+SLLV $5, $5, $2
+SRLV $5, $5, $6
+SRAV $5, $5, $4
+SRAV $5, $5, $5
+SRLV $5, $5, $5
+SRAV $5, $5, $3
+SRLV $5, $5, $2
+SLLV $5, $5, $5
+SLLV $5, $5, $3
+SRAV $5, $5, $2
+SRLV $5, $5, $6
+SRAV $5, $5, $5
+SRAV $5, $5, $4

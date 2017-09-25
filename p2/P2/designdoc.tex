@@ -1,129 +1,201 @@
 \documentclass[10pt]{article}
 
+\usepackage{graphicx}
 \usepackage{fullpage}
 \usepackage[normalem]{ulem} % For strikethrough font
-\title{Example Design Documentation}
+\title{Project 2 Design Documentation}
 % Name, netid
-\author{first\_name last\_name (netid) \and first\_name last\_name (netid)}
+\author{Zaibo Wang (zw85) \and Andrea Yang (yy545)}
 
 \begin{document}
 \maketitle
 
-\section{Introduction}
-In this course, you'll be required to write design documents for several of your projects.
-It's very important that you put time and effort into this!
-The students who put time and effort into their design documents almost always end up getting better grades and having an easier time with their projects in this course.
-At this point, you've probably had to do some medium-sized coding projects for your coursework;
-so you should realize that it is often difficult to go back and redisign when you run into a problem in the middle of your project.
-The design document provides you with a way to think about the problems you'll be coming up against while doing your initial design.
-
-While the structure of a design document may seem constraining in its structure, it is designed to do two things:
-first, it requires you to use an organized thought process while designing your project; 
-second, it requires you to write out the results of this thought process in a way that is communicable, in this case, with us, the TAs, but also with your teammates.
-
-Provide an overview of the entire document:
-\begin{itemize}
-\item Describe the purpose of the document
-\item Describe the scope of the document
-\item Describe this document's intended audience
-\item Provide references for any other documents, such as textbook, reference manual, etc.
-\item Define any important terms, acronyms, or abbreviations.
-\item Summarize the content of the document
-\end{itemize}
-
 \section{Overview}
-Provides an general overview of the functionality of the system and matters related to its design (including
-a discussion of the basic design approach and organization). You could split this up to multiple subsections.
 
+The pipelined MIPS processor has 5 stages:
+\begin{itemize}
+    \item Fetch
+    \item Decode
+    \item Execute
+    \item Memory
+    \item Writeback
+\end{itemize}
+We'll also discuss in our handling of the following:
+\begin{itemize}
+    \item Hazards
+    \item Testing Procedure
+\end{itemize}
+\begin{figure}[h]
+    \includegraphics[scale=.37]{Pipeline.png}
+    \caption{The main circuit, with some added monitoring outputs for testing purposes.}
+\end{figure}
+
+
+\newpage
 \section{The Fetch Stage}
+In this stage, the PC provides an address in program memory to read from. After this, PC is incremented by 4 for the next word. From program memory, a 32-bit word is read and sent to the pipeline register. For this project, we assume no branching/jumping so PC will always increment by 4. 
+\begin{figure}[h]
+    \includegraphics[scale=.5]{Fetch.png}
+    \caption{The Fetch stage subcircuit, with Fibonacci loaded in to the RAM}
+\end{figure}
 
-\subsection{Circuit Diagram}
-Top level schematic and description
-\subsubsection{Submodule A}
-Submodule A schematic and description
-\subsubsection{Submodule B}
-Submodule B schematic and description
+\newpage
+\section{Decode}
+In the Decode stage, we need to parse the instructions to decide the operations. The following subsections will describe the control logic for different outputs
 
-\subsection{Correctness Constraints}
-State the functional requirement of this module.
+\begin{figure}[h]
+    \includegraphics[scale=.35]{Decode.png}
+    \caption{Circuit will be reorganized for clarity later}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[scale=.35]{Control.png}
+    \caption{Control is a subcircuit of Decode. It's primary function is to decode all signals needed by the ALU}
+\end{figure}
+
+\subsection{A\_out}
+Simply reads the register output for A
+
+\subsection{LUI\_DATA\_out and LUI\_out}
+A load word value is calculated by parsing the 16 low bits in word and 16 0's. This value is passed on along with LUI\_out until after the execute stage, at which point there is a mux using the signal LUI\_out to choose between the output of execute and LUI\_Data. Another possible way to have done this was to take the immediate value from the word, and apply SLL with shamt = 16. We believe that this method was simpler to implement, although it does require passing on more data.
+
+\subsection{B\_out}
+The control logic for B is perhaps the most complicated of all outputs. First, the bottom 16 bits of the word are both sign extended and 0 extended into 32 bit values. A mux after this uses bit 2 from Opcode to signal. Sign extend is used for signed immediate values (ADDUI, SLTI, SLTIU) and 0 extend is used for unsigned immediate values (ANDI, ORI, XORI.) 
+
+A second mux takes in the input from the previous mux, and the output B from the register. The signal for this mux is bit 3 in Opcode because this bit indicates whether the operation will be I-type or R-type. I-type instructions always use immediate (with exception of LUI) and correspond to bit 3 as 1, and R-type instructions always use B and correspond to bit 3 as 0. 
+
+\subsection{Sa\_out}
+Sa\_out is the shift amount which goes to the ALU in the case of a shift operation. In the case in which the operator is SLLV, SRLV or SRAV, the shift amount must come from the lowest 5 bits of rA. A signal for this is provided by the Controls subcircuit in the form of shift\_var which outputs as 1 if Opcode is 000000, bit 2 of function is 1 and bit 5 of function is 0. In all other situations, either the operator is SLL, SRL, SRA, and in these situations, the shift amount is given by bits 6-10 in the word. For non shifting operations, there will still be a shift amount but this will not affect the output of the ALU.
+
+\subsection{Ctrl\_out}
+This is the instruction, passed along the pipeline
+
+\subsection{WE}
+WE or Write-Enable is an important signal which prevents instructions such as branch or jump from changing memory and register values. In other words, WE should be 1 when the word is R or I type and 0 when the word is J type. There are of course exceptions to this rule, such as JALR, however, JALR which must be taken care of, if necessary, in the next project. The write enable signal looks for Opcode in which bits 0-2 are 0, or not all bits 3-5 are 0.
+
+\subsection{OP\_ALU\_out}
+This signal decodes the opcode and/or function to determine what opcode the ALU should execute. The general rule for R-type is take the low-order 3 bits from function and append a 0 to the end. The exceptions to this rule include SRA, SRAV, SLT, and SLTU. SRA and SRAV are handled within Controls. The signal for the mux to indicate SRA is bits 0, 1 AND not 5. If such is the case, the mux will output 0101 (Opcode for SRA) which is essentially hard coded using the 4th bit of function which is always 0. SLT and SLTU are handled separately, detailed below. 
+
+\subsection{SLT\_out and SLTU\_out}
+SLT\_out and SLTU\_out are two signals which indicate if the operation is a set less than. This is separated from the Opcode for the ALU because SLT operations use comparators instead. Muxes later on in execute will override the output of the ALU and use the SLT value if either of the SLT signals are 1. The signals are made in such a way that if SLTU is 1, SLT must be 1. This is done by using an AND gate for SLTU where one of the inputs is the signal from SLT.
+
+\subsection{rW}
+rW is the address for the register to be written to. It uses one mux (picture not updated) to choose between bits 11-15 and 16-20. This is necessary because the write register for immediate and load operations uses bits 16-20 while R-type instructions have rW as bits 11-15. 
+
+\subsection{rA}
+rA is the register for the first register. It is always bits 21-25 so it is split from the word. 
+
+\subsection{rB}
+rB is usually bits 16-20, except in the case of I-type instructions. The 3rd bit of Opcode is 1 only for I-types, so it is used as the signal for the mux. If the operation is an I-type, rB should be a 5-bit 0 so it reads out 0. While this does not affect B\_out because the I-type case in B\_out is handled, this mux is important for the forwarding phase, because there are certain edge cases where if rB is not 'zeroed', the Forwarding Unit detects a data hazard that doesn't exist.
+
+
+\newpage
+\section{Execute}
+\begin{figure}[h]
+    \includegraphics[scale=.5]{Execute.png}
+    \caption{Circuit will be reorganized for clarity later}
+\end{figure}
+
+\subsection{ALU}
+ The ALU takes values A, B, Op, SA and outputs C. Input A is always from register memory. Input B has a mux so the input may come from the register memory or directly from the instruction word in the case of an immediate instruction. The operations of the ALU include SRL, SLL, SRA, SRAV, SRLV, SLLV, ADDU, SUBU, AND, OR, XOR, NOR, ADDUI, ANDI, ORI, XORI. This is quite straightforward as all the decoding operations were done in the Decode stage.
+
+\subsection{Other operations}
+There are 5 operations in the Execute which do not use the ALU: SLT, SLTI, SLTU, SLTUI and LUI. However, because the B/immediate conflict was resolved, SLT/SLTI and SLTU/SLTUI behave the same way.
+
+The LUI operation is technically completed in decode. LUI\_Data and the LUI signal are inputs to execute. If the LUI signal is 1, the mux after the ALU will take LUI\_Data instead of C, the output of the ALU.
+
+Two comparators are used, one for signed and one for unsigned logic. The first mux uses the control signal SLTU to check if the output should come from the signed or unsigned comparator. The bit is then extended to 32 bits and a second mux uses the SLT signal. As mentioned previously, because SLTU uses takes the SLT signal in an AND gate, SLT must be 1 if SLTU is 1. With this in mind, if SLT is 1, it will take the value of one of the comparators instead of the ALU or LUI. While it appears that SLT may override LUI, there is no case in which both of these signals can both be 1.
+
+\section{Memory}
+For this project, the memory stage does not have to be implemented. The instructions for memory writing can instead be transmitted as a signal to the LCD Video screen. 
+
+\section{Writeback}
+Reads previous pipeline register. If writeback is signaled, it stores data from register into the address given by the register.
+
+\newpage
+\section{Hazard Handling}
+In this project the circuit can encounter structural and data hazards. 
+\subsection{Structural}
+We deal with the problem of reading from and writing to the register file at the same time by negating the clock for the register file, so that write happens in the first half of the cycle, and read happens in the second half.
+\subsection{Data Hazards}
+We do both the detecting and the handling of data hazards in a subcircuit unit Forwarding. The logic of the unit follows the forwarding detection logic outlined in the specifications for EX hazards and MEM hazards.
+\begin{figure}[h]
+    \includegraphics[scale=.35]{Forwarding.png}
+    \caption{Forwarding is a subcircuit with inputs pulled from from ID/EX, EX/MEM, and MEM/WB.}
+\end{figure}
+\newline We use four 2x1 muxes to determine the A and B outputs, with the top two being ForwardA and the bottom two being ForwardB (see diagram) The inputs are chosen based on the following:
 \begin{itemize}
-\item item 1
-\item item 2
-\item item 3
+    \item ID\_EX\_A and ID\_EX\_B are taken from the outputs of ID/EX, and are each passed as the first input for the first set of 2x1 muxes.
+    \item MEM\_WB\_Out comes from C\_out of MEM/WB, which is the output about to be passed into writeback for writing to the register file, if RegWrite = 1. This is passed as the second input into the first set of 2x1 muxes.The outputs will be passed into the second set of muxes as their first inputs.
+    \item EX\_MEM\_Out comes from C\_out of EX/MEM, which is essentially the result from the ALU in the most recent execution.This is passed as the second input into the second set of 2x1 muxes.
 \end{itemize}
-
-\subsection{Testing}
-State the approach to verify the functional correctness of this module.
-
-\section{...}
-
-\section{Summary}
-...
-
-\section{Guidelines}
-The purpose of this document is for you to outline the design of your MIPS processor and provide an overview of your proposed implementation. 
-
-It serves to:
+Control signals are determined through the following steps:
 \begin{itemize}
-\item Help you to start early and understand the requirements.
-\item Facilitate communication between you and your TA to get feedback on your design.
-\item Clarify any part of your circuit that we may find confusing.
+    \item rA and rB inputs correspond to rs and rt in the Word, retrieved from the Decode stage.
+    \item rD\_EX\_MEM and rD\_MEM\_WB are the write destinations in the Word, pulled from EX/MEM and MEM/WB. They're passed into XOR gates along with rA and rB separately. 
+    \begin{figure}[h]
+    \includegraphics[scale=.3]{CheckNotZero.png}
+    \caption{CheckNot0, a helper component}
+    \end{figure}
+    \item The XOR gates and the component CheckNot0 checks if the outputs of the XOR gates or the rDs are zero. If WE is 1, rD is not zero (which is why we negate the output), and matches either rA or rB, then forwarding must happen. And if both hazards occur, we must choose the most recent result, which is EX\_MEM\_Out.
 \end{itemize}
+\section{Testing}
+The following text is the documentation which details how tests where generated for the circuit. Generally, the MIPS interpreter was compared to circuit register values. Assembly code was generated using python, relevant scripts are on Github.
 
-As with any high level design, you should update and refine this document
-as you work on the implementation.  You will need to turn an initial design document a week after the project is released and turn in a final design document when you are done with the project. 
+ 6 lines generate random 16 bit numbers to assign to registers
+ 
+ Next 26 lines take ADDU and SUBU and applies on the first 7 assigned registers. Edge cases such as when both registers are the same are accounted for, but no data hazards will occur
+ 
+ Next 26 lines are in the form ADDU/SUBU \$n, \$(n-1), \$(n-2). This will test for MEM/WB and EX/MEM data hazards INDEPENDENTLY
+ 
+ Register outputs are checked with MIPS interpreter
+ 
+ Next 26 lines are in the form ADDU/SUBU \$n, \$n, \$register(1-6). This will test for when MEM/WB and EX/MEM data hazards both occur, in which case the value from EX/MEM should be taken
+ 
+ Register n is checked after all instructions are run
 
-\subsection{Modularity}
-Modularity is the single most important concept to understand when writing a design document
-(and possibly in digital design in general). Section 1.2 in this book\footnote[1]{Digital design 
-and computer architecture by David Money Harris and Sarah L. Harris. A free ebook version is available from 
-Cornell library at cornell.worldcat.org} gives a good overview of what
-exactly modularity means in this context, and it is highly suggested that you read it. Make sure
-when you are designing your system that you are primarily thinking in terms of the modules you
-need and the interfaces between them. If any single module in your system is so complex
-that you cannot easily reason about its behavior, then it should be split up into multiple modules.
+ 31 Lines generate a random 16-bit uint. Saves LUI operated number in new register each time to be checked with MIPS interpreter
 
-\subsection{A picture is worth a \sout{1,000} million words}
-Trying to write an entirely textual description of a circuit quickly becomes unmanageable for a
-design of any significant size. Well organized diagrams should always come first, and then small
-textual blurbs should be added for any piece of the diagram which may not be immediately
-clear to the viewer. When creating diagrams, it is important to organize blocks in some logical
-fashion. A typical strategy is to have inputs on the left and outputs on the right, and then to have
-data ``flow" through your module from left to right.
+ First 4 lines assign random number to 4 registers. Next 50 lines test ORI, ANDI, XORI with random immediate numbers
+ 
+ The output registers are compared to the register values in MIPS interpreter
 
-\subsection{Know Your Audience}
-You can assume that anybody looking at your design will know everything from lecture, but
-not that they have any prior knowledge about how your design is organized. Therefore it
-is perfectly acceptable to use primitive blocks such as the various boolean gates and flipflops
-without showing their transistor level implementation. In fact, it will actively hurt the
-clarity of your document if you decide to show implementation at such a low level. It is even
-fine to use high level blocks such as adders that we have covered in class without further
-elaboration. If you have a block that is a combinational function, it is best to give a truth table
-or boolean expression for the function rather than showing a harder to understand gate-level
-implementation of the function.
-It is not, however, okay to give a high level description of a block such as ``Control Logic" and
-never give any further elaboration.
+ First 6 lines assign random number to 6 registers. 
+ 
+ Next 26 lines test ORI, ANDI, XORI with random pairs of first 6 registers
+ 
+ The output registers are compared to the register values in MIPS interpreter
+ 
+ Next 26 lines are in the form LOGICAL \$n, \$(n-1), \$(n-2). This will test for MEM/WB and EX/MEM data hazards INDEPENDENTLY
+ 
+ Register outputs are checked with MIPS interpreter
+ 
+ Next 26 lines are in the form LOGICAL \$n, \$n, \$register(1-6). This will test for when MEM/WB and EX/MEM data hazards both occur, in which case the value from EX/MEM should be taken
+ 
+ Register n is checked after all instructions are run
 
-\subsection{Approach}
-We recommend the following process for making your document:
-\begin{itemize}
-\item Draw a top level schematic for your circuit, using the coarsest blocks you can think of as your
-building blocks.
-\item For each block on the top level, draw a new diagram showing the implementation of that
-block. Again, use modules to implement any non-trivial functionality in this model.
-\item Recursively apply this process everywhere until you only have primitive blocks (see Know
-Your Audience).
-\item If there are any places where your solution is not made immediately obvious by the diagram,
-add text annotations to explain what is happening.
-\end{itemize}
+ 6 lines generate random 16-bit numbers to assign to first 6 registers.
+ 
+ 26 lines generate random 0<shamt<16 and applies a random shift (SLL, SRA, SRL) to a random register. 
+ 
+ The final registers are then compared to MIPS interpreter
 
-\subsection{Miscellaneous}
-The required submission file format for the design document is PDF.
-You can, for example, create a PDF file using Microsoft Word or Google Docs. However,
-we recommend you to generate your PDF version of the design document using \LaTeX. You could
-take this tex file and the associated Makefile as a starting point for your
-design document. For a quick reference on \LaTeX, please refer to the wikibook at
-http://en.wikibooks.org/wiki/LaTeX
+ First 4 lines assign random numbers to 4 registers. Next 4 lines test SLTI/SLTIU manually with edge cases
+ 
+ The next 30 lines test SLTIU/SLTI with random immediate numbers
+ 
+ The output registers are compared to the register values in MIPS interpreter
+
+ 4 lines assign random numbers to 4 registers.
+ 
+ The next 30 lines test SLTIU/SLTI with random registers from first 4 generated. Because it's possible to compare the same register to itself, edge case is tested for. 
+ 
+ The output registers are compared to the register values in MIPS interpreter
+
+ 6 Lines generate random unsigned numbers.
+
+ 26 Lines randomly generate pairs of first six registers and applies SRLV/SRAV/SLLV
+ Register values are compared to those from MIPS interpreter
 
 
 \end{document}
